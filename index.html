@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>T ELITE AURA - VIP</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;font-family:Arial,Helvetica,sans-serif;color:#fff}
+body{position:relative}
+#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0}
+#login{
+  position:absolute;z-index:10;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:min(360px,88vw);padding:30px 24px 26px;border:1px solid #a000ff;
+  border-radius:18px;background:rgba(0,0,0,.9);
+  box-shadow:0 0 22px #7b00ff, inset 0 0 25px rgba(140,0,255,.14);
+  text-align:center
+}
+#login h1{margin:0 0 24px;color:#b000ff;font-size:27px;letter-spacing:2px;text-shadow:0 0 12px #9d00ff}
+.input{width:100%;margin:10px 0;padding:13px 14px;border:1px solid #7600a8;border-radius:8px;background:#07000b;color:#fff;outline:none}
+.input:focus{border-color:#c000ff;box-shadow:0 0 10px #7d00ff}
+#enter{width:100%;padding:13px;margin-top:12px;border:1px solid #b000ff;border-radius:9px;background:#32004b;color:#fff;font-weight:bold;box-shadow:0 0 14px #8000ff;cursor:pointer}
+#err{height:18px;color:#ff3b3b;font-size:12px;margin-top:8px}
+#dev{margin-top:22px;color:#b000ff;font-weight:bold}
+#server{margin-top:24px;font-size:13px;color:#aaa}.online{color:#00ff78}
+
+#panel{
+  display:none;position:absolute;z-index:5;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:min(41vw,650px);height:min(48vh,430px);max-height:48vh;overflow:hidden;background:rgba(3,0,8,.95);
+  border:2px solid #a900ff;border-radius:9px;box-shadow:0 0 8px #b000ff,0 0 28px rgba(170,0,255,.7),inset 0 0 22px rgba(170,0,255,.14)
+}
+#panel::-webkit-scrollbar{width:6px}#panel::-webkit-scrollbar-thumb{background:#ff1010;border-radius:20px}
+.head{height:68px;display:flex;align-items:center;padding:0 18px;border-bottom:1px solid #35004a;cursor:move;user-select:none}
+.title{font-size:25px;font-weight:800;letter-spacing:2px;text-shadow:0 0 12px #c000ff}
+.ver{margin-left:auto;background:#7600b5;border:1px solid #e56cff;padding:8px 13px;border-radius:12px;cursor:pointer;box-shadow:0 0 14px #b000ff;font-weight:bold}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid #3d0000}
+.tab{padding:14px 8px;text-align:center;font-weight:bold;cursor:pointer;border-right:1px solid #260035;color:#d9c6ff}
+.tab.active{color:#fff;background:#21002f;box-shadow:inset 0 -4px 0 #b000ff,0 0 18px rgba(170,0,255,.55)}
+.content{padding:10px;max-height:calc(42vh - 112px);overflow-y:auto}
+.content::-webkit-scrollbar{width:5px}.content::-webkit-scrollbar-thumb{background:#a000ff;border-radius:10px}
+.section{display:none}.section.active{display:block}
+.box{border:1px solid #6900a0;background:#0b0310;border-radius:6px;padding:8px;margin-bottom:7px;box-shadow:0 0 10px rgba(170,0,255,.2)}
+.row{display:flex;justify-content:space-between;align-items:center;font-size:16px;min-height:42px}.value{color:#d43cff;font-weight:bold}
+.select{height:40px;display:flex;align-items:center;justify-content:space-between;border:1px solid #6900a0;border-radius:6px;background:#07000b;padding:0 16px;margin-top:10px;color:#ddd}
+.arrow{color:#d000ff;font-size:24px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+.action{padding:17px;border-radius:30px;border:1px solid #e05cff;background:linear-gradient(90deg,#6200a8,#bd16ff);color:#fff;font-weight:bold;font-size:17px;box-shadow:0 0 18px rgba(180,0,255,.85);cursor:pointer}
+.action:active{transform:scale(.98)}
+.footer{display:flex;justify-content:space-between;padding:8px 16px 16px;color:#d83cff;font-size:13px}
+.option{min-height:52px;display:flex;align-items:center;gap:8px;padding:9px 12px;margin-bottom:8px;border:1px solid #65009a;border-radius:7px;background:#09010d;box-shadow:0 0 9px rgba(170,0,255,.18)}
+.option>span:first-child{flex:1;color:#fff;font-size:15px}
+.status{color:#c53cff;font-size:9px;white-space:nowrap;font-weight:bold}
+.miniSwitch{width:42px;height:22px;border-radius:14px;border:1px solid #b000ff;background:#26002f;position:relative;cursor:pointer;box-shadow:0 0 8px rgba(170,0,255,.4)}
+.miniSwitch i{position:absolute;width:16px;height:16px;left:3px;top:2px;border-radius:50%;background:#777;transition:.2s}
+.miniSwitch.on{background:#7d00b5}.miniSwitch.on i{left:21px;background:#fff;box-shadow:0 0 8px #d000ff}
+.coming{min-height:160px;display:flex;align-items:center;justify-content:center;border:1px solid #60009a;background:#08010c;color:#c63cff;font-size:20px;font-weight:bold;letter-spacing:2px;text-shadow:0 0 12px #a000ff;border-radius:8px}
+.premium{position:fixed;z-index:8;right:14px;bottom:14px;display:flex;align-items:center;gap:8px;padding:9px 12px;border:1px solid #b000ff;border-radius:18px;background:#100016;box-shadow:0 0 14px rgba(170,0,255,.65);font-size:12px}
+.switch{width:42px;height:22px;background:#330000;border:1px solid #b000ff;border-radius:20px;position:relative;cursor:pointer}
+.knob{width:16px;height:16px;border-radius:50%;background:#777;position:absolute;top:2px;left:3px;transition:.2s}
+.switch.on{background:#b50000}.switch.on .knob{left:21px;background:#fff;box-shadow:0 0 8px #fff}
+#dot{display:none;position:fixed;z-index:20;right:18px;top:50%;width:18px;height:18px;border-radius:50%;background:#ff1010;border:1px solid #ff8b8b;box-shadow:0 0 8px red,0 0 20px red;cursor:pointer}
+.smallnote{color:#777;font-size:11px;text-align:center;margin-top:8px}
+@media(max-width:600px) and (orientation:portrait){
+ #panel{width:86vw;height:52vh;max-height:52vh}
+ .head{height:44px;padding:0 10px}.title{font-size:13px;letter-spacing:.7px}.ver{padding:5px 7px;font-size:9px}
+ .tabs{height:36px}.tab{font-size:9px;padding:10px 2px}.content{padding:7px;max-height:calc(52vh - 84px)}
+ .row{font-size:11px;min-height:30px}.select{height:34px;font-size:10px}.actions{grid-template-columns:1fr 1fr;gap:6px}.action{font-size:10px;padding:10px 4px}
+ .option{min-height:38px;padding:6px 7px;margin-bottom:6px}.option>span:first-child{font-size:11px}.status{font-size:6px}
+ .miniSwitch{width:31px;height:17px}.miniSwitch i{width:12px;height:12px;top:1px;left:2px}.miniSwitch.on i{left:16px}
+ .footer{padding:4px 8px 7px;font-size:9px}
+}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+
+<div id="login">
+  <h1>T ELITE AURA</h1>
+  <input id="user" class="input" placeholder="Username" autocomplete="off">
+  <input id="pass" class="input" type="password" placeholder="Password" autocomplete="off">
+  <button id="enter">Enter</button>
+  <div id="err"></div>
+  <div id="dev">DEV : AURA RAZU</div>
+  <div id="server">Server : <span class="online">Online</span></div>
+  <div class="smallnote">VIP PANEL</div>
+</div>
+
+<div id="panel">
+  <div class="head" id="drag">
+    <div class="title">T ELITE AURA - VIP</div>
+    <div class="ver" id="minBtn">V1.1</div>
+  </div>
+  <div class="tabs">
+    <div class="tab active" data-tab="esp">ESP</div>
+    <div class="tab" data-tab="aim">AIM</div>
+    <div class="tab" data-tab="other">OTHER</div>
+    <div class="tab" data-tab="info">INFO</div>
+  </div>
+
+  <div class="content">
+    <div id="esp" class="section active">
+      <div class="option"><span>ESP Line</span><span class="status">COMING SOON</span><div class="miniSwitch"><i></i></div></div>
+      <div class="option"><span>ESP Box</span><span class="status">COMING SOON</span><div class="miniSwitch"><i></i></div></div>
+      <div class="option"><span>ESP Name</span><span class="status">COMING SOON</span><div class="miniSwitch"><i></i></div></div>
+      <div class="option"><span>ESP Distance</span><span class="status">COMING SOON</span><div class="miniSwitch"><i></i></div></div>
+      <div class="option"><span>ESP Health</span><span class="status">COMING SOON</span><div class="miniSwitch"><i></i></div></div>
+      <div class="option"><span>ESP Skeleton</span><span class="status">COMING SOON</span><div class="miniSwitch"><i></i></div></div>
+    </div>
+    <div id="aim" class="section">
+      <div class="option"><span>Aim Assist</span><span class="status">COMING SOON</span><div class="miniSwitch"><i></i></div></div>
+      <div class="option"><span>Aim FOV</span><span class="status">COMING SOON</span><div class="miniSwitch"><i></i></div></div>
+      <div class="option"><span>Aim Smooth</span><span class="status">COMING SOON</span><div class="miniSwitch"><i></i></div></div>
+      <div class="option"><span>Aim Lock</span><span class="status">COMING SOON</span><div class="miniSwitch"><i></i></div></div>
+      <div class="option"><span>Aim Target</span><span class="status">COMING SOON</span><div class="miniSwitch"><i></i></div></div>
+      <div class="option"><span>Recoil Control</span><span class="status">COMING SOON</span><div class="miniSwitch"><i></i></div></div>
+    </div>
+    <div id="other" class="section">
+      <div class="option"><span>Hit Effect</span><span class="status">COMING SOON</span><div class="miniSwitch"><i></i></div></div>
+      <div class="option"><span>Wounded Effect</span><span class="status">COMING SOON</span><div class="miniSwitch"><i></i></div></div>
+      <div class="option"><span>Crosshair</span><span class="status">COMING SOON</span><div class="miniSwitch"><i></i></div></div>
+      <div class="option"><span>FPS Counter</span><span class="status">COMING SOON</span><div class="miniSwitch"><i></i></div></div>
+      <div class="option"><span>Screen Info</span><span class="status">COMING SOON</span><div class="miniSwitch"><i></i></div></div>
+      <div class="option"><span>Extra Settings</span><span class="status">COMING SOON</span><div class="miniSwitch"><i></i></div></div>
+    </div>
+    <div id="info" class="section">
+      <div class="box">
+        <div class="row"><span>Hit/Wounded Effects</span><span class="arrow">▼</span></div>
+        <div class="select"><span>Hit/Wounded Effects</span><span class="arrow">▼</span></div>
+      </div>
+      <div class="box"><div class="row"><span>Screen Resolution</span><span class="value" id="resolution">2460 × 1080</span></div></div>
+      <div class="box"><div class="row"><span>Engine Framerate</span><span class="value">60 FPS</span></div></div>
+      <div class="box"><div class="row"><span>System Time</span><span class="value" id="time">00:00:00</span></div></div>
+      <div class="actions">
+        <button class="action">RECORD</button>
+        <button class="action">SCREENSHOT</button>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>TIME: <span id="time2">00:00</span></span><span>60 FPS</span></div>
+</div>
+
+<div class="premium">PREMIUM <div class="switch" id="sw"><div class="knob"></div></div></div>
+<div id="dot" title="Open panel"></div>
+
+<script>
+/* Purple connected moving particles */
+const c=document.getElementById('bg'),ctx=c.getContext('2d');
+let pts=[],W,H;
+function resize(){W=c.width=innerWidth*devicePixelRatio;H=c.height=innerHeight*devicePixelRatio;ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);W=innerWidth;H=innerHeight}
+function init(){pts=[];for(let i=0;i<65;i++)pts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.45,vy:(Math.random()-.5)*.45,r:1+Math.random()*2})}
+function draw(){
+ ctx.clearRect(0,0,W,H);
+ for(const p of pts){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;
+  ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(180,0,255,.9)';ctx.shadowBlur=8;ctx.shadowColor='#a000ff';ctx.fill();
+ }
+ ctx.shadowBlur=0;
+ for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){let dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.hypot(dx,dy);
+  if(d<125){ctx.strokeStyle='rgba(145,0,255,'+(1-d/125)*.35+')';ctx.lineWidth=.7;ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.stroke()}
+ }
+ requestAnimationFrame(draw)
+}
+addEventListener('resize',()=>{resize();init()});resize();init();draw();
+
+const login=document.getElementById('login'),panel=document.getElementById('panel'),dot=document.getElementById('dot');
+document.getElementById('enter').onclick=()=>{
+ if(document.getElementById('user').value==='T-ELITE-1234' && document.getElementById('pass').value==='AURA-0987'){
+   login.style.display='none';panel.style.display='block';
+ }else document.getElementById('err').textContent='Wrong Username or Password';
+};
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+ document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');
+ document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));
+ document.getElementById(t.dataset.tab).classList.add('active');
+});
+document.getElementById('minBtn').onclick=()=>{panel.style.display='none';dot.style.display='block'};
+dot.onclick=()=>{dot.style.display='none';panel.style.display='block'};
+
+document.getElementById('sw').onclick=()=>document.getElementById('sw').classList.toggle('on');
+document.querySelectorAll('.miniSwitch').forEach(s=>s.onclick=()=>s.classList.toggle('on'));
+
+function clock(){
+ const d=new Date(),s=d.toLocaleTimeString('en-GB');
+ document.getElementById('time').textContent=s;
+ document.getElementById('time2').textContent=s.slice(0,5);
+}setInterval(clock,1000);clock();
+
+/* Drag the whole panel by its top bar */
+let dragging=false,ox=0,oy=0;
+const bar=document.getElementById('drag');
+bar.addEventListener('pointerdown',e=>{dragging=true;const r=panel.getBoundingClientRect();ox=e.clientX-r.left;oy=e.clientY-r.top;bar.setPointerCapture(e.pointerId)});
+bar.addEventListener('pointermove',e=>{if(!dragging)return;panel.style.left=(e.clientX-ox)+'px';panel.style.top=(e.clientY-oy)+'px';panel.style.transform='none'});
+bar.addEventListener('pointerup',()=>dragging=false);
+</script>
+</body>
+</html>
